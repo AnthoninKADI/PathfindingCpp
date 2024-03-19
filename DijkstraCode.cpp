@@ -1,67 +1,82 @@
-#include <cstdlib>
 #include <iostream>
-#include <limits>
-int inf = std::numeric_limits<int>::max();
+#include <climits>
 using namespace std;
 
-int miniDist(int distance[], bool Tset[]) 
+enum
 {
-    int minimum=INT_MAX,ind;
-              
-    for(int k=0;k<7;k++) 
+    Y = 7
+};
+
+int minDistance(int distance[], bool Q[])
+{
+    int minimum = INT_MAX;
+    int min_index = 0;
+
+    for (int x = 0; x < Y; x++)
     {
-        if(Tset[k]==false && distance[k]<=minimum)      
+        if (Q[x] == false && distance[x] <= minimum)
         {
-            minimum=distance[k];
-            ind=k;
+            minimum = distance[x];
+            min_index = x;
         }
     }
-    return ind;
+    return min_index;
 }
 
-void Dijkstra(int graph[7][7],int src) 
+void result(int distance[])
 {
-    int distance[7];                             
-    bool Tset[7];
-    
-     
-    for(int k = 0; k<7; k++)
+    cout << "Vertex \t\t Distance from Source" << '\n';
+    for (int x = 0; x < Y; x++)
     {
-        distance[k] = INT_MAX;
-        Tset[k] = false;    
-    }
-    
-    distance[src] = 0;                 
-    
-    for(int k = 0; k<7; k++)                           
-    {
-        int m=miniDist(distance,Tset); 
-        Tset[m]=true;
-        for(int k = 0; k<7; k++)                  
-        {
-            if(!Tset[k] && graph[m][k] && distance[m]!=INT_MAX && distance[m]+graph[m][k]<distance[k])
-                distance[k]=distance[m]+graph[m][k];
-        }
-    }
-    cout<<"Vertex\t\tDistance from source vertex"<<endl;
-    for(int k = 0; k<7; k++)                      
-    { 
-        char str=65+k; 
-        cout<<str<<"\t\t\t"<<distance[k]<<endl;
+        cout << x << " \t\t" << distance[x] << '\n';
     }
 }
+
+void dijkstra(int graph[Y][Y], int src)
+{
+    int distance[Y];
+	
+    bool Q[Y];
+	
+    for (int i = 0; i < Y; i++)
+    {
+        distance[i] = INT_MAX, Q[i] = false;
+    }
+
+    distance[src] = 0;
+
+    for (int number = 0; number < Y - 1; number++)
+    {
+        int u = minDistance(distance, Q);
+
+        Q[u] = true;
+
+        for (int v = 0; v < Y; v++)
+        {
+            if (!Q[v] && graph[u][v] && distance[u] != INT_MAX && distance[u] + graph[u][v] < distance[v])
+            {
+                distance[v] = distance[u] + graph[u][v];
+            }
+        }
+    }
+    result(distance);
+}
+
 
 int main()
 {
-    int graph[7][7]={
-        {0, 10, 15, NULL, 30, NULL, NULL},
-        {NULL, 0, NULL, NULL, NULL, 57, NULL},
-        {15, NULL, 0, 16, NULL, NULL, 52},
-        {NULL, NULL, 13, 0, NULL, NULL, NULL},
-        {30, NULL, NULL, NULL, 0, 11, 34},
-        {NULL, 49, NULL, NULL, 12, 0, NULL},
-        {NULL, NULL, 63, NULL, 35, NULL, 0}};
-
-    Dijkstra(graph,0); //6 -> G // 2 -> C //
-    return 0;                           
+    int graph[Y][Y] =
+    {
+        0, 10, 15, NULL, 30, NULL, NULL,
+        NULL, 0, NULL, NULL, NULL, 57, NULL,
+        15, NULL, 0, 16, NULL, NULL, 52,
+        NULL, NULL, 13, 0, NULL, NULL, NULL,
+        30, NULL, NULL, NULL, 0, 11, 34,
+        NULL, 49, NULL, NULL, 12, 0, NULL,
+        NULL, NULL, 63, NULL, 35, NULL, 0
+    };
+    dijkstra(graph, 0);
+    return 0;
 }
+
+

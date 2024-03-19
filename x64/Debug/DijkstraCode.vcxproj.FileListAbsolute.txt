@@ -1,1 +1,2 @@
 C:\Users\anthonin.kadi\RiderProjects\DijkstraCode\x64\Debug\DijkstraCode.exe
+C:\Users\anthonin.kadi\Documents\GitHub\DijkstraCode\x64\Debug\DijkstraCode.exe
