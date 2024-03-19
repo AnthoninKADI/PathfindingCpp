@@ -1,5 +1,9 @@
+#include <algorithm>
 #include <iostream>
 #include <climits>
+#include <stdbool.h>
+#include <stdbool.h>
+#include <vector>
 using namespace std;
 
 enum
@@ -18,24 +22,47 @@ int minDistance(int distance[], bool Q[])
         {
             minimum = distance[x];
             min_index = x;
+            
         }
     }
     return min_index;
 }
 
-void result(int distance[])
+void result(int distance[], int prev[])
 {
-    cout << "Vertex \t\t Distance from Source" << '\n';
+    cout << "Vertex \t\t Distance\t\t Path" << '\n';
     for (int x = 0; x < Y; x++)
     {
-        cout << x << " \t\t" << distance[x] << '\n';
+        cout << x << " \t\t" << distance[x] << " \t\t";
+        int p = prev[x];
+        while(p != -1)
+        {
+            cout<<" "<<static_cast<char>('A' + p)<<",";
+            p = prev[p];
+        }
+        cout<<endl;
     }
+}
+
+bool hasOpenNode(bool Q[])
+{
+    for(int i =0; i < Y; i++)
+    {
+        if(Q[i] == false)
+            return true;
+        
+    }
+    return false;
 }
 
 void dijkstra(int graph[Y][Y], int src)
 {
     int distance[Y];
-	
+    int prev[Y];
+    for(int y = 0; y < Y ; y++)
+    {
+        prev[y] = -1;
+    }
     bool Q[Y];
 	
     for (int i = 0; i < Y; i++)
@@ -44,22 +71,22 @@ void dijkstra(int graph[Y][Y], int src)
     }
 
     distance[src] = 0;
-
-    for (int number = 0; number < Y - 1; number++)
+    
+    while (hasOpenNode(Q))
     {
         int u = minDistance(distance, Q);
-
         Q[u] = true;
-
+        //int prev;
         for (int v = 0; v < Y; v++)
         {
-            if (!Q[v] && graph[u][v] && distance[u] != INT_MAX && distance[u] + graph[u][v] < distance[v])
+            if (u!=v && !Q[v] && graph[u][v] && distance[u] != INT_MAX && distance[u] + graph[u][v] < distance[v])
             {
                 distance[v] = distance[u] + graph[u][v];
+                prev[v] = u;
             }
         }
     }
-    result(distance);
+    result(distance, prev);
 }
 
 
@@ -75,8 +102,6 @@ int main()
         NULL, 49, NULL, NULL, 12, 0, NULL,
         NULL, NULL, 63, NULL, 35, NULL, 0
     };
-    dijkstra(graph, 0);
+    dijkstra(graph, 2);
     return 0;
 }
-
-
