@@ -154,8 +154,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="algo.cpp" />
     <ClCompile Include="Astar.cpp" />
     <ClCompile Include="DijkstraCode.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="raylib.dll" />
+    <Content Include="raylib.pdb" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
