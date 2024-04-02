@@ -16,12 +16,12 @@ enum Terrain
 
 struct Node
 {
-    int x, y; // Position of the node
-    float g, h, f; // Cost values
-    bool obstacle; // Flag to indicate if the node is an obstacle
-    Node* parent; // Pointer to the parent node
-    Terrain terrain; // Terrain type of the node
-    float terrainCostMultiplier; // Cost multiplier based on terrain type
+    int x, y; 
+    float g, h, f; 
+    bool obstacle; 
+    Node* parent; 
+    Terrain terrain; 
+    float CostMultiplier; 
     bool operator==(const Node& other) const
     {
         return x == other.x && y == other.y;
@@ -48,10 +48,10 @@ float getTerrainCost(const Node& node)
     }
 }
 
-std::vector<Node*> astar(Node* start, const Node* goal, std::vector<std::vector<Node>>& grid)
+std::vector<Node*> aStar(Node* start, const Node* goal, std::vector<std::vector<Node>>& grid)
 {
     start->terrain = Normal;
-    start->terrainCostMultiplier = getTerrainCost(*start);
+    start->CostMultiplier = getTerrainCost(*start);
 
     std::vector<Node*> openList, closedList;
     start->g = 0;
@@ -61,7 +61,6 @@ std::vector<Node*> astar(Node* start, const Node* goal, std::vector<std::vector<
 
     while (!openList.empty())
     {
-        // Get the node with the lowest f value
         auto currentNode = std::min_element(openList.begin(), openList.end(), [](const Node* a, const Node* b)
             {
                 return a->f < b->f;
@@ -71,7 +70,6 @@ std::vector<Node*> astar(Node* start, const Node* goal, std::vector<std::vector<
 
         closedList.push_back(current);
 
-        // Found the goal
         if (*current == *goal)
         {
             std::vector<Node*> path;
@@ -84,41 +82,37 @@ std::vector<Node*> astar(Node* start, const Node* goal, std::vector<std::vector<
             return path;
         }
 
-        // Generate children
         for (int dx = -1; dx <= 1; ++dx)
         {
             for (int dy = -1; dy <= 1; ++dy)
             {
                 if (dx == 0 && dy == 0)
                 {
-                    continue; // Skip the current node
+                    continue; 
                 }
                 const int newX = current->x + dx;
                 const int newY = current->y + dy;
 
                 if (newX < 0 || newX >= rows || newY < 0 || newY >= cols)
                 {
-                    continue; // Out of grid bounds
+                    continue; 
                 }
 
                 Node& child = grid[newX][newY];
 
-                // Check if the child is an obstacle
                 if (child.obstacle)
                 {
                     continue;
                 }
 
-                // Child is on the closedList
                 if (std::find(closedList.begin(), closedList.end(), &child) != closedList.end())
                 {
                     continue;
                 }
 
-                const float tentative_g = current->g + distance(*current, child) * child.terrainCostMultiplier;
+                const float tentative_g = current->g + distance(*current, child) * child.CostMultiplier;
                 bool isNewPath = false;
 
-                // Check if the child is already in the open list
                 auto it = find(openList.begin(), openList.end(), &child);
                 if (it == openList.end())
                 {
@@ -140,12 +134,10 @@ std::vector<Node*> astar(Node* start, const Node* goal, std::vector<std::vector<
             }
         }
     }
-
-    // If no path is found, return an empty path
     return {};
 }
 
-void printGridWithPath(const std::vector<std::vector<Node>>& grid, const std::vector<Node*>& path)
+void DrawPathWithGrid(const std::vector<std::vector<Node>>& grid, const std::vector<Node*>& path)
 {
     for (int i = 0; i < rows; ++i)
     {
@@ -154,27 +146,27 @@ void printGridWithPath(const std::vector<std::vector<Node>>& grid, const std::ve
             const Node& node = grid[i][j];
             if (std::find(path.begin(), path.end(), &node) != path.end())
             {
-                std::cout << " * "; // Mark path nodes with *
+                std::cout << " o ";
             }
             else if (node.obstacle || node.terrain == Obstacle)
             {
-                std::cout << " X "; // Mark obstacle nodes with X
+                std::cout << " X ";
             }
             else if (node.terrain == Normal)
             {
-                std::cout << " . "; // Mark Normal nodes with .
+                std::cout << " . ";
             }
             else if (node.terrain == Challenging)
             {
-                std::cout << " C "; // Mark Challenging nodes with C
+                std::cout << " C ";
             }
             else if (node.terrain == Difficult)
             {
-                std::cout << " D "; // Mark Difficult nodes with D
+                std::cout << " D ";
             }
             else
             {
-                std::cout << "E "; // Mark empty nodes with E
+                std::cout << "E ";
             }
         }
         std::cout << '\n';
@@ -185,7 +177,6 @@ int main()
 {
     std::vector<std::vector<Node>> grid(rows, std::vector<Node>(cols));
 
-    // Initialize grid with nodes and set obstacles
     for (int i = 0; i < rows; ++i)
     {
         for (int j = 0; j < cols; ++j)
@@ -194,7 +185,6 @@ int main()
             grid[i][j].y = j;
             grid[i][j].parent = nullptr;
 
-            // Assign terrain types
             if (grid[i][j].obstacle)
             {
                 grid[i][j].terrain = Obstacle;
@@ -203,55 +193,56 @@ int main()
             {
                 grid[i][j].terrain = Normal;
             }
-            grid[i][j].terrainCostMultiplier = getTerrainCost(grid[i][j]);
+            grid[i][j].CostMultiplier = getTerrainCost(grid[i][j]);
         }
     }
 
-    Node* start = grid[0].data(); // Set start node
-    const Node* goal = &grid[rows - 1][cols - 1];  // Set goal node
+    Node* start = grid[0].data(); 
+    const Node* goal = &grid[rows - 1][cols - 1];  
 
-    // Set Nodes
     grid[1][6].obstacle = true;
     grid[1][7].obstacle = true;
     grid[1][8].obstacle = true;
 
     grid[2][1].obstacle = true;
     grid[2][2].obstacle = true;
-    grid[2][3].obstacle = true;
+    grid[2][3].terrain = Challenging;
     grid[2][4].obstacle = true;
-    grid[2][5].obstacle = true;
+    grid[2][5].terrain = Challenging;
 
     grid[4][5].obstacle = true;
-    grid[4][7].obstacle = true;
-    grid[4][8].obstacle = true;
+    grid[4][7].terrain = Difficult;
+    grid[4][8].terrain = Difficult;
     grid[4][9].obstacle = true;
 
-    grid[6][6].obstacle = true;
+    grid[6][6].terrain = Challenging;
     grid[6][7].obstacle = true;
-    grid[6][9].obstacle = true;
+    grid[6][9].terrain = Difficult;
 
     grid[8][5].obstacle = true;
-    grid[8][6].obstacle = true;
+    grid[8][6].terrain = Challenging;
     grid[8][7].obstacle = true;
 
-    grid[5][5].terrain = Challenging;
+    grid[5][5].obstacle = true;
 
-    grid[6][0].terrain = Challenging;
-    grid[6][1].terrain = Challenging;
-    grid[6][2].terrain = Challenging;
+    grid[6][0].obstacle = true;
+    grid[6][1].terrain = Difficult;
+    grid[6][2].obstacle = true;
 
-    grid[5][3].terrain = Difficult;
+    grid[5][3].obstacle = true;
 
-    grid[8][2].terrain = Difficult;
+    grid[8][2].obstacle = true;
     grid[8][3].terrain = Difficult;
 
-    // Call A* algorithm
-    const std::vector<Node*> path = astar(start, goal, grid);
 
-    // Print the path
+    const std::vector<Node*> path = aStar(start, goal, grid);
+
     if (!path.empty())
     {
-        std::cout << "Path found :\n";
+        std::cout << "Grid with path :\n";
+        DrawPathWithGrid(grid, path);
+
+        std::cout << "\nPath found :\n";
         for (const auto& node : path)
         {
             std::cout << getTerrainCost(*node) << " -> ";
@@ -259,14 +250,10 @@ int main()
         }
         std::cout << '\n';
 
-        // Print the grid with the path marked
-        std::cout << "Grid with path :\n";
-        printGridWithPath(grid, path);
     }
     else
     {
-        std::cout << "Insanity is doing the same thing over and over again and expecting different results. \n";
-        printGridWithPath(grid, path);
+        DrawPathWithGrid(grid, path);
     }
     return 0;
 }
