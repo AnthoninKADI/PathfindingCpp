@@ -30,7 +30,7 @@ int minDistance(int distance[], bool Q[])
 
 void result(int distance[], int prev[])
 {
-    cout << "Vertex \t\t Distance\t\t Path" << '\n';
+    cout << "Vertex:\t\tDistance:\t Path:" << '\n';
     for (int x = 0; x < Y; x++)
     {
         cout << x << " \t\t" << distance[x] << " \t\t";
@@ -90,18 +90,18 @@ void dijkstra(int graph[Y][Y], int src)
 }
 
 
-int main()
-{
-    int graph[Y][Y] =
-    {
-        0, 10, 15, NULL, 30, NULL, NULL,
-        NULL, 0, NULL, NULL, NULL, 57, NULL,
-        15, NULL, 0, 16, NULL, NULL, 52,
-        NULL, NULL, 13, 0, NULL, NULL, NULL,
-        30, NULL, NULL, NULL, 0, 11, 34,
-        NULL, 49, NULL, NULL, 12, 0, NULL,
-        NULL, NULL, 63, NULL, 35, NULL, 0
-    };
-    dijkstra(graph, 2);
-    return 0;
-}
+//int main()
+//{
+//    int graph[Y][Y] =
+//    {
+//        0, 10, 15, NULL, 30, NULL, NULL,
+//        NULL, 0, NULL, NULL, NULL, 57, NULL,
+//        15, NULL, 0, 16, NULL, NULL, 52,
+//        NULL, NULL, 13, 0, NULL, NULL, NULL,
+//        30, NULL, NULL, NULL, 0, 11, 34,
+//        NULL, 49, NULL, NULL, 12, 0, NULL,
+//        NULL, NULL, 63, NULL, 35, NULL, 0
+//    };
+//    dijkstra(graph, 2);
+//    return 0;
+//}

@@ -16,12 +16,12 @@ enum Terrain
 
 struct Node
 {
-    int x, y; 
-    float g, h, f; 
-    bool obstacle; 
-    Node* parent; 
-    Terrain terrain; 
-    float terrainCostMultiplier; 
+    int x, y; // Position of the node
+    float g, h, f; // Cost values
+    bool obstacle; // Flag to indicate if the node is an obstacle
+    Node* parent; // Pointer to the parent node
+    Terrain terrain; // Terrain type of the node
+    float terrainCostMultiplier; // Cost multiplier based on terrain type
     bool operator==(const Node& other) const
     {
         return x == other.x && y == other.y;
@@ -212,12 +212,19 @@ int main()
 
     // Set Nodes
     grid[1][6].obstacle = true;
+    grid[1][7].obstacle = true;
     grid[1][8].obstacle = true;
 
-    grid[2][0].obstacle = true;
     grid[2][1].obstacle = true;
     grid[2][2].obstacle = true;
+    grid[2][3].obstacle = true;
+    grid[2][4].obstacle = true;
     grid[2][5].obstacle = true;
+
+    grid[4][5].obstacle = true;
+    grid[4][7].obstacle = true;
+    grid[4][8].obstacle = true;
+    grid[4][9].obstacle = true;
 
     grid[6][6].obstacle = true;
     grid[6][7].obstacle = true;
@@ -225,15 +232,18 @@ int main()
 
     grid[8][5].obstacle = true;
     grid[8][6].obstacle = true;
-    grid[8][8].obstacle = true;
+    grid[8][7].obstacle = true;
 
     grid[5][5].terrain = Challenging;
+
     grid[6][0].terrain = Challenging;
     grid[6][1].terrain = Challenging;
-    grid[6][3].terrain = Challenging;
+    grid[6][2].terrain = Challenging;
+
     grid[5][3].terrain = Difficult;
+
     grid[8][2].terrain = Difficult;
-    grid[8][9].terrain = Difficult;
+    grid[8][3].terrain = Difficult;
 
     // Call A* algorithm
     const std::vector<Node*> path = astar(start, goal, grid);
@@ -248,10 +258,14 @@ int main()
             std::cout << "(" << node->x << ", " << node->y << ") | ";
         }
         std::cout << '\n';
+
+        // Print the grid with the path marked
+        std::cout << "Grid with path :\n";
         printGridWithPath(grid, path);
     }
     else
     {
+        std::cout << "Insanity is doing the same thing over and over again and expecting different results. \n";
         printGridWithPath(grid, path);
     }
     return 0;

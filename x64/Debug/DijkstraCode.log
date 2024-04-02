@@ -1,0 +1,4 @@
+﻿  Astar.cpp
+C:\Users\anthonin.kadi\Documents\GitHub\DijkstraCode\Astar.cpp(33,16): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+C:\Users\anthonin.kadi\Documents\GitHub\DijkstraCode\Astar.cpp(49): warning C4715: 'getTerrainCost': not all control paths return a value
+  DijkstraCode.vcxproj -> C:\Users\anthonin.kadi\Documents\GitHub\DijkstraCode\x64\Debug\DijkstraCode.exe
